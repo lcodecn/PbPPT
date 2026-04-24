@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PbPPT Library 操作库参考文档</title>
+  <style>
+    body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; color: #333; }
+    .header { background: linear-gradient(135deg, #d44300 0%, #9e2f00 100%); color: white; padding: 30px; text-align: center; }
+    .header h1 { margin: 0; font-size: 2.2em; }
+    .header .version { font-size: 1em; opacity: 0.9; margin-top: 10px; }
+    .header .author { font-size: 0.9em; opacity: 0.8; margin-top: 5px; }
+    .nav { background: #2b2b2b; padding: 15px; overflow: auto; }
+    .nav a { color: #fff; text-decoration: none; padding: 5px 15px; display: inline-block; font-size: 0.9em; }
+    .nav a:hover { background: #444; border-radius: 4px; }
+    .container { max-width: 960px; margin: 20px auto; padding: 0 20px; }
+    .section { background: white; margin: 20px 0; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .section h2 { color: #d44300; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-top: 0; }
+    .section h3 { color: #333; margin-top: 25px; }
+    .function-block { background: #f5f5f5; padding: 15px; margin: 15px 0; border-left: 4px solid #d44300; border-radius: 0 4px 4px 0; }
+    .function-name { color: #c7254e; font-family: "Consolas", "Courier New", monospace; font-size: 1.1em; font-weight: bold; }
+    .function-desc { margin: 10px 0; line-height: 1.6; }
+    .function-params { margin: 10px 0; }
+    .function-params table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .function-params th { background: #e8e8e8; padding: 8px; text-align: left; border: 1px solid #ddd; }
+    .function-params td { padding: 8px; border: 1px solid #ddd; }
+    .return-type { background: #e8f5e9; padding: 8px; border-radius: 4px; margin: 10px 0; }
+    .example { background: #263238; color: #e0e0e0; padding: 15px; border-radius: 4px; overflow-x: auto; font-family: "Consolas", "Courier New", monospace; font-size: 0.9em; margin: 10px 0; white-space: pre; line-height: 1.6; }
+    .example .comment { color: #80cbc4; }
+    .example .keyword { color: #c792ea; }
+    .example .function { color: #82b1ff; }
+    .example .string { color: #c3e88d; }
+    .example .number { color: #f78c6c; }
+    .example .variable { color: #ffcb6b; }
+    .toc { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .toc h3 { margin-top: 0; }
+    .toc ul { list-style: none; padding-left: 0; }
+    .toc li { padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
+    .toc a { color: #d44300; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .note { background: #fff3cd; padding: 12px; border-left: 4px solid #ffc107; border-radius: 4px; margin: 15px 0; }
+    .note strong { color: #856404; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 0.9em; margin-top: 40px; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "Consolas", "Courier New", monospace; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>PbPPT Library</h1>
+  <div class="version">版本 1.8</div>
+  <div class="author">作者: lcode.cn | 许可证: Apache 2.0</div>
+</div>
+
+<div class="nav">
+  <a href="#overview">概述</a>
+  <a href="#presentation">演示文稿</a>
+  <a href="#slide">幻灯片</a>
+  <a href="#shape">形状</a>
+  <a href="#text">文本</a>
+  <a href="#style">样式</a>
+  <a href="#table">表格</a>
+  <a href="#chart">图表</a>
+  <a href="#picture">图片</a>
+  <a href="#properties">文档属性</a>
+  <a href="#unit">单位转换</a>
+  <a href="#examples">示例代码</a>
+  <a href="#changelog">版本历史</a>
+</div>
+
+<div class="container">
+
+  <div class="section" id="overview">
+    <h2>概述</h2>
+    <p>PbPPT 是一个纯 PureBasic 实现的 PowerPoint 文件操作库，无需安装 Microsoft Office 或任何第三方依赖，即可创建和读取 PowerPoint pptx 文件。</p>
+    <p>该库参考 Python 的 python-pptx 项目（v1.0.2）移植而来，使用 PureBasic 内置的 XML 和 Packer 库实现。</p>
+    <div class="note">
+      <strong>注意：</strong>使用 PbPPT 库前，需要在代码开头添加 <code>XIncludeFile "PbPPT.pb"</code> 以引入库文件，并调用 <code>PbPPT_Init()</code> 进行初始化。
+    </div>
+    <h3>主要功能</h3>
+    <ul>
+      <li>创建和读取 PowerPoint pptx 文件</li>
+      <li>添加文本框、自动形状、图片、表格、图表、连接符</li>
+      <li>设置字体样式（名称、大小、颜色、粗体、斜体、下划线）</li>
+      <li>设置形状样式（纯色填充、无填充、线条格式、旋转）</li>
+      <li>多段落文本和富文本Run支持</li>
+      <li>表格单元格读写、行高列宽设置</li>
+      <li>图表数据系列和分类标签设置</li>
+      <li>文档属性设置（标题、作者、主题等）</li>
+      <li>幻灯片尺寸设置（标准4:3、宽屏16:9、自定义）</li>
+      <li>图片去重优化，减少文件大小</li>
+    </ul>
+  </div>
+
+  <div class="toc">
+    <h3>函数索引</h3>
+    <ul>
+      <li><a href="#Init">Init</a> - 初始化库</li>
+      <li><a href="#Create">Create</a> - 创建演示文稿</li>
+      <li><a href="#Open">Open</a> - 打开演示文稿</li>
+      <li><a href="#Save">Save</a> - 保存演示文稿</li>
+      <li><a href="#Close">Close</a> - 关闭演示文稿</li>
+      <li><a href="#AddSlide">AddSlide</a> - 添加幻灯片</li>
+      <li><a href="#AddTextbox">AddTextbox</a> - 添加文本框</li>
+      <li><a href="#AddShape">AddShape</a> - 添加自动形状</li>
+      <li><a href="#AddPicture">AddPicture</a> - 添加图片</li>
+      <li><a href="#AddTable">AddTable</a> - 添加表格</li>
+      <li><a href="#AddChart">AddChart</a> - 添加图表</li>
+      <li><a href="#AddConnector">AddConnector</a> - 添加连接符</li>
+      <li><a href="#SetShapeText">SetShapeText</a> - 设置形状文本</li>
+      <li><a href="#SetFont">SetFont</a> - 设置字体</li>
+      <li><a href="#AddRun">AddRun</a> - 添加富文本Run</li>
+      <li><a href="#SetFillSolid">SetFillSolid</a> - 设置纯色填充</li>
+      <li><a href="#SetFillNone">SetFillNone</a> - 设置无填充</li>
+      <li><a href="#SetLineFormat">SetLineFormat</a> - 设置线条格式</li>
+      <li><a href="#SetShapeRotation">SetShapeRotation</a> - 设置旋转角度</li>
+      <li><a href="#SetCellValue">SetCellValue</a> - 设置单元格值</li>
+      <li><a href="#SetChartTitle">SetChartTitle</a> - 设置图表标题</li>
+      <li><a href="#AddChartCategory">AddChartCategory</a> - 添加图表分类</li>
+      <li><a href="#AddChartSeries">AddChartSeries</a> - 添加图表系列</li>
+      <li><a href="#InchesToEmu">InchesToEmu</a> - 英寸转EMU</li>
+      <li><a href="#CmToEmu">CmToEmu</a> - 厘米转EMU</li>
+    </ul>
+  </div>
+
+  <!-- ==================== 演示文稿操作 ==================== -->
+  <div class="section" id="presentation">
+    <h2>演示文稿操作</h2>
+
+    <div class="function-block" id="Init">
+      <div class="function-name">PbPPT_Init()</div>
+      <div class="function-desc">初始化 PbPPT 库。在使用任何 PbPPT 函数之前必须调用此函数。</div>
+      <div class="example">
+<span class="comment">; 初始化PbPPT库</span>
+<span class="function">PbPPT_Init</span>()
+      </div>
+    </div>
+
+    <div class="function-block" id="Create">
+      <div class="function-name">PbPPT_Create()</div>
+      <div class="function-desc">创建一个新的 PowerPoint 演示文稿。创建后可添加幻灯片和形状。</div>
+      <div class="return-type"><strong>返回值：</strong> 成功返回 #True，失败返回 #False。</div>
+      <div class="example">
+<span class="function">PbPPT_Init</span>()
+<span class="keyword">If</span> <span class="function">PbPPT_Create</span>()
+  <span class="comment">; 演示文稿创建成功</span>
+  <span class="function">PbPPT_AddSlide</span>(0)
+  <span class="function">PbPPT_Save</span>(<span class="string">"output.pptx"</span>)
+  <span class="function">PbPPT_Close</span>()
+<span class="keyword">EndIf</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="Open">
+      <div class="function-name">PbPPT_Open(filename.s)</div>
+      <div class="function-desc">打开一个现有的 PowerPoint 文件。可以读取文件信息并修改后另存。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>filename</td><td>String</td><td>pptx文件的完整路径</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 成功返回 #True，失败返回 #False。</div>
+    </div>
+
+    <div class="function-block" id="Save">
+      <div class="function-name">PbPPT_Save(filename.s)</div>
+      <div class="function-desc">将演示文稿保存为 pptx 文件。该函数会生成符合 Office Open XML 标准的 pptx 文件。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>filename</td><td>String</td><td>输出文件的完整路径（.pptx 后缀）</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 成功返回 #True，失败返回 #False。</div>
+      <div class="example">
+<span class="keyword">If</span> <span class="function">PbPPT_Save</span>(<span class="string">"output.pptx"</span>)
+  <span class="function">MessageRequester</span>(<span class="string">"成功"</span>, <span class="string">"文件已保存！"</span>)
+<span class="keyword">Else</span>
+  <span class="function">MessageRequester</span>(<span class="string">"错误"</span>, <span class="string">"保存失败！"</span>)
+<span class="keyword">EndIf</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="Close">
+      <div class="function-name">PbPPT_Close()</div>
+      <div class="function-desc">关闭当前演示文稿，释放所有相关资源。在保存后应调用此函数。</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetSlideCount()</div>
+      <div class="function-desc">获取当前演示文稿中的幻灯片数量。</div>
+      <div class="return-type"><strong>返回值：</strong> 幻灯片数量（整数）。</div>
+    </div>
+  </div>
+
+  <!-- ==================== 幻灯片操作 ==================== -->
+  <div class="section" id="slide">
+    <h2>幻灯片操作</h2>
+
+    <div class="function-block" id="AddSlide">
+      <div class="function-name">PbPPT_AddSlide(layoutIndex.i)</div>
+      <div class="function-desc">添加一张新的幻灯片到演示文稿末尾。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>layoutIndex</td><td>Integer</td><td>版式索引（当前仅支持0=空白版式）</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 幻灯片索引（整数），从0开始。</div>
+      <div class="example">
+<span class="comment">; 添加一张空白幻灯片</span>
+<span class="variable">slideIdx</span> = <span class="function">PbPPT_AddSlide</span>(0)
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetSlideWidth(width.i)</div>
+      <div class="function-desc">设置幻灯片宽度。单位为EMU（English Metric Units）。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>width</td><td>Integer</td><td>幻灯片宽度（EMU）</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetSlideHeight(height.i)</div>
+      <div class="function-desc">设置幻灯片高度。单位为EMU。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>height</td><td>Integer</td><td>幻灯片高度（EMU）</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetSlideWidth()</div>
+      <div class="function-desc">获取当前幻灯片宽度（EMU）。</div>
+      <div class="return-type"><strong>返回值：</strong> 幻灯片宽度（整数，EMU）。</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetSlideHeight()</div>
+      <div class="function-desc">获取当前幻灯片高度（EMU）。</div>
+      <div class="return-type"><strong>返回值：</strong> 幻灯片高度（整数，EMU）。</div>
+    </div>
+
+    <div class="note">
+      <strong>常用幻灯片尺寸常量：</strong><br>
+      <code>#PbPPT_STANDARD_SLIDE_WIDTH</code> = 9144000 (10英寸, 标准4:3)<br>
+      <code>#PbPPT_STANDARD_SLIDE_HEIGHT</code> = 6858000 (7.5英寸, 标准4:3)<br>
+      <code>#PbPPT_WIDESCREEN_SLIDE_WIDTH</code> = 12192000 (13.333英寸, 宽屏16:9)<br>
+      <code>#PbPPT_WIDESCREEN_SLIDE_HEIGHT</code> = 6858000 (7.5英寸, 宽屏16:9)
+    </div>
+  </div>
+
+  <!-- ==================== 形状操作 ==================== -->
+  <div class="section" id="shape">
+    <h2>形状操作</h2>
+
+    <div class="function-block" id="AddTextbox">
+      <div class="function-name">PbPPT_AddTextbox(slideIndex.i, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">在指定幻灯片上添加一个文本框。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>幻灯片索引（从0开始）</td></tr>
+          <tr><td>left</td><td>Integer</td><td>左边距（EMU）</td></tr>
+          <tr><td>top</td><td>Integer</td><td>上边距（EMU）</td></tr>
+          <tr><td>width</td><td>Integer</td><td>文本框宽度（EMU）</td></tr>
+          <tr><td>height</td><td>Integer</td><td>文本框高度（EMU）</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 形状ID（整数），用于后续操作。</div>
+      <div class="example">
+<span class="variable">tbId</span> = <span class="function">PbPPT_AddTextbox</span>(0, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(8), <span class="function">PbPPT_InchesToEmu</span>(2))
+<span class="function">PbPPT_SetShapeText</span>(<span class="variable">tbId</span>, <span class="string">"Hello PbPPT!"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="AddShape">
+      <div class="function-name">PbPPT_AddShape(slideIndex.i, prstGeom.s, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">在指定幻灯片上添加一个自动形状。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>幻灯片索引</td></tr>
+          <tr><td>prstGeom</td><td>String</td><td>预设形状名称，如 #PbPPT_PrstRectangle$</td></tr>
+          <tr><td>left</td><td>Integer</td><td>左边距（EMU）</td></tr>
+          <tr><td>top</td><td>Integer</td><td>上边距（EMU）</td></tr>
+          <tr><td>width</td><td>Integer</td><td>形状宽度（EMU）</td></tr>
+          <tr><td>height</td><td>Integer</td><td>形状高度（EMU）</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 形状ID（整数）。</div>
+      <div class="example">
+<span class="comment">; 添加蓝色矩形</span>
+<span class="variable">rectId</span> = <span class="function">PbPPT_AddShape</span>(0, <span class="variable">#PbPPT_PrstRectangle$</span>, <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(3), <span class="function">PbPPT_InchesToEmu</span>(6), <span class="function">PbPPT_InchesToEmu</span>(2))
+<span class="function">PbPPT_SetFillSolid</span>(<span class="variable">rectId</span>, <span class="string">"4472C4"</span>)
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>常用预设形状常量：</strong><br>
+      <code>#PbPPT_PrstRectangle$</code> - 矩形<br>
+      <code>#PbPPT_PrstRoundRectangle$</code> - 圆角矩形<br>
+      <code>#PbPPT_PrstEllipse$</code> - 椭圆/圆形<br>
+      <code>#PbPPT_PrstTriangle$</code> - 三角形<br>
+      <code>#PbPPT_PrstDiamond$</code> - 菱形<br>
+      <code>#PbPPT_PrstStar5$</code> - 五角星<br>
+      <code>#PbPPT_PrstArrow$</code> - 箭头
+    </div>
+
+    <div class="function-block" id="AddConnector">
+      <div class="function-name">PbPPT_AddConnector(slideIndex.i, beginX.i, beginY.i, endX.i, endY.i)</div>
+      <div class="function-desc">在指定幻灯片上添加一条直线连接符。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>幻灯片索引</td></tr>
+          <tr><td>beginX</td><td>Integer</td><td>起点X坐标（EMU）</td></tr>
+          <tr><td>beginY</td><td>Integer</td><td>起点Y坐标（EMU）</td></tr>
+          <tr><td>endX</td><td>Integer</td><td>终点X坐标（EMU）</td></tr>
+          <tr><td>endY</td><td>Integer</td><td>终点Y坐标（EMU）</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 形状ID（整数）。</div>
+    </div>
+  </div>
+
+  <!-- ==================== 文本操作 ==================== -->
+  <div class="section" id="text">
+    <h2>文本操作</h2>
+
+    <div class="function-block" id="SetShapeText">
+      <div class="function-name">PbPPT_SetShapeText(shapeId.i, text.s)</div>
+      <div class="function-desc">设置形状的文本内容。使用换行符（#LF$）分隔多个段落。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+          <tr><td>text</td><td>String</td><td>文本内容，#LF$分隔段落</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; 设置多段落文本</span>
+<span class="function">PbPPT_SetShapeText</span>(<span class="variable">tbId</span>, <span class="string">"第一段"</span> + <span class="variable">#LF$</span> + <span class="string">"第二段"</span> + <span class="variable">#LF$</span> + <span class="string">"第三段"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="SetFont">
+      <div class="function-name">PbPPT_SetFont(shapeId.i, paraIdx.i, runIdx.i, name.s, size.i, bold.b, italic.b, underline.b, color.s)</div>
+      <div class="function-desc">设置形状中文本的字体样式。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+          <tr><td>paraIdx</td><td>Integer</td><td>段落索引（从1开始）</td></tr>
+          <tr><td>runIdx</td><td>Integer</td><td>Run索引（从1开始）</td></tr>
+          <tr><td>name</td><td>String</td><td>字体名称，如 "微软雅黑"</td></tr>
+          <tr><td>size</td><td>Integer</td><td>字号（磅），如 28</td></tr>
+          <tr><td>bold</td><td>Boolean</td><td>是否粗体</td></tr>
+          <tr><td>italic</td><td>Boolean</td><td>是否斜体</td></tr>
+          <tr><td>underline</td><td>Boolean</td><td>是否下划线</td></tr>
+          <tr><td>color</td><td>String</td><td>字体颜色（6位十六进制），如 "FF0000"</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; 设置第1段第1个Run为微软雅黑28号粗体蓝色</span>
+<span class="function">PbPPT_SetFont</span>(<span class="variable">tbId</span>, 1, 1, <span class="string">"微软雅黑"</span>, 28, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"2E75B6"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="AddRun">
+      <div class="function-name">PbPPT_AddRun(shapeId.i, paraIdx.i, text.s, name.s, size.i, bold.b, italic.b, underline.b, color.s)</div>
+      <div class="function-desc">在指定段落末尾添加一个富文本Run，实现同一段落内不同样式的文本。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+          <tr><td>paraIdx</td><td>Integer</td><td>段落索引（从1开始）</td></tr>
+          <tr><td>text</td><td>String</td><td>Run文本内容</td></tr>
+          <tr><td>name</td><td>String</td><td>字体名称</td></tr>
+          <tr><td>size</td><td>Integer</td><td>字号（磅）</td></tr>
+          <tr><td>bold</td><td>Boolean</td><td>是否粗体</td></tr>
+          <tr><td>italic</td><td>Boolean</td><td>是否斜体</td></tr>
+          <tr><td>underline</td><td>Boolean</td><td>是否下划线</td></tr>
+          <tr><td>color</td><td>String</td><td>字体颜色（6位十六进制）</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; 添加红色粗体Run</span>
+<span class="function">PbPPT_AddRun</span>(<span class="variable">tbId</span>, 1, <span class="string">"（红色粗体）"</span>, <span class="string">"宋体"</span>, 14, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"FF0000"</span>)
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetParagraphAlignment(shapeId.i, paraIdx.i, align.i)</div>
+      <div class="function-desc">设置段落对齐方式。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+          <tr><td>paraIdx</td><td>Integer</td><td>段落索引（从1开始）</td></tr>
+          <tr><td>align</td><td>Integer</td><td>对齐方式常量</td></tr>
+        </table>
+      </div>
+      <div class="note">
+        <strong>对齐方式常量：</strong><br>
+        <code>#PbPPT_AlignLeft</code> = 0 - 左对齐<br>
+        <code>#PbPPT_AlignCenter</code> = 1 - 居中<br>
+        <code>#PbPPT_AlignRight</code> = 2 - 右对齐<br>
+        <code>#PbPPT_AlignJustify</code> = 3 - 两端对齐
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 样式操作 ==================== -->
+  <div class="section" id="style">
+    <h2>样式操作</h2>
+
+    <div class="function-block" id="SetFillSolid">
+      <div class="function-name">PbPPT_SetFillSolid(shapeId.i, color.s)</div>
+      <div class="function-desc">设置形状的纯色填充。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+          <tr><td>color</td><td>String</td><td>填充颜色（6位十六进制），如 "4472C4"</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="function">PbPPT_SetFillSolid</span>(<span class="variable">shapeId</span>, <span class="string">"4472C4"</span>)  <span class="comment">; 蓝色填充</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="SetFillNone">
+      <div class="function-name">PbPPT_SetFillNone(shapeId.i)</div>
+      <div class="function-desc">设置形状为无填充（透明）。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="function-block" id="SetLineFormat">
+      <div class="function-name">PbPPT_SetLineFormat(shapeId.i, width.i, color.s)</div>
+      <div class="function-desc">设置形状的线条格式。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+          <tr><td>width</td><td>Integer</td><td>线条宽度（EMU），可用PbPPT_PtToEmu转换</td></tr>
+          <tr><td>color</td><td>String</td><td>线条颜色（6位十六进制）</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; 设置1磅宽的深蓝色线条</span>
+<span class="function">PbPPT_SetLineFormat</span>(<span class="variable">shapeId</span>, <span class="function">PbPPT_PtToEmu</span>(1), <span class="string">"2F528F"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="SetShapeRotation">
+      <div class="function-name">PbPPT_SetShapeRotation(shapeId.i, angle.f)</div>
+      <div class="function-desc">设置形状的旋转角度。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>形状ID</td></tr>
+          <tr><td>angle</td><td>Float</td><td>旋转角度（度），正值顺时针，负值逆时针</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="function">PbPPT_SetShapeRotation</span>(<span class="variable">shapeId</span>, 45)   <span class="comment">; 顺时针旋转45度</span>
+<span class="function">PbPPT_SetShapeRotation</span>(<span class="variable">shapeId</span>, -15)  <span class="comment">; 逆时针旋转15度</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 表格操作 ==================== -->
+  <div class="section" id="table">
+    <h2>表格操作</h2>
+
+    <div class="function-block" id="AddTable">
+      <div class="function-name">PbPPT_AddTable(slideIndex.i, rows.i, cols.i, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">在指定幻灯片上添加一个表格。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>幻灯片索引</td></tr>
+          <tr><td>rows</td><td>Integer</td><td>行数</td></tr>
+          <tr><td>cols</td><td>Integer</td><td>列数</td></tr>
+          <tr><td>left</td><td>Integer</td><td>左边距（EMU）</td></tr>
+          <tr><td>top</td><td>Integer</td><td>上边距（EMU）</td></tr>
+          <tr><td>width</td><td>Integer</td><td>表格宽度（EMU）</td></tr>
+          <tr><td>height</td><td>Integer</td><td>表格高度（EMU）</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 形状ID（整数）。</div>
+      <div class="example">
+<span class="variable">tblId</span> = <span class="function">PbPPT_AddTable</span>(0, 4, 3, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(8), <span class="function">PbPPT_InchesToEmu</span>(3))
+<span class="function">PbPPT_SetCellValue</span>(<span class="variable">tblId</span>, 1, 1, <span class="string">"姓名"</span>)
+<span class="function">PbPPT_SetCellValue</span>(<span class="variable">tblId</span>, 1, 2, <span class="string">"年龄"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="SetCellValue">
+      <div class="function-name">PbPPT_SetCellValue(shapeId.i, row.i, col.i, text.s)</div>
+      <div class="function-desc">设置表格单元格的值。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>表格形状ID</td></tr>
+          <tr><td>row</td><td>Integer</td><td>行号（从1开始）</td></tr>
+          <tr><td>col</td><td>Integer</td><td>列号（从1开始）</td></tr>
+          <tr><td>text</td><td>String</td><td>单元格文本</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetCellValue(shapeId.i, row.i, col.i)</div>
+      <div class="function-desc">获取表格单元格的值。</div>
+      <div class="return-type"><strong>返回值：</strong> 单元格文本（字符串）。</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetColWidth(shapeId.i, col.i, width.i)</div>
+      <div class="function-desc">设置表格列宽。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>表格形状ID</td></tr>
+          <tr><td>col</td><td>Integer</td><td>列号（从1开始）</td></tr>
+          <tr><td>width</td><td>Integer</td><td>列宽（EMU）</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetRowHeight(shapeId.i, row.i, height.i)</div>
+      <div class="function-desc">设置表格行高。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>表格形状ID</td></tr>
+          <tr><td>row</td><td>Integer</td><td>行号（从1开始）</td></tr>
+          <tr><td>height</td><td>Integer</td><td>行高（EMU）</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 图表操作 ==================== -->
+  <div class="section" id="chart">
+    <h2>图表操作</h2>
+
+    <div class="function-block" id="AddChart">
+      <div class="function-name">PbPPT_AddChart(slideIndex.i, chartType.i, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">在指定幻灯片上添加一个图表。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>幻灯片索引</td></tr>
+          <tr><td>chartType</td><td>Integer</td><td>图表类型常量</td></tr>
+          <tr><td>left</td><td>Integer</td><td>左边距（EMU）</td></tr>
+          <tr><td>top</td><td>Integer</td><td>上边距（EMU）</td></tr>
+          <tr><td>width</td><td>Integer</td><td>图表宽度（EMU）</td></tr>
+          <tr><td>height</td><td>Integer</td><td>图表高度（EMU）</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 形状ID（整数）。</div>
+      <div class="note">
+        <strong>图表类型常量：</strong><br>
+        <code>#PbPPT_ChartTypeColumnClustered</code> = 1 - 簇状柱形图<br>
+        <code>#PbPPT_ChartTypeColumnStacked</code> = 2 - 堆积柱形图<br>
+        <code>#PbPPT_ChartTypeBarClustered</code> = 4 - 簇状条形图<br>
+        <code>#PbPPT_ChartTypeLine</code> = 8 - 折线图<br>
+        <code>#PbPPT_ChartTypeLineMarkers</code> = 9 - 带标记折线图<br>
+        <code>#PbPPT_ChartTypePie</code> = 10 - 饼图<br>
+        <code>#PbPPT_ChartTypePieExploded</code> = 11 - 分离饼图<br>
+        <code>#PbPPT_ChartTypeDoughnut</code> = 14 - 圆环图<br>
+        <code>#PbPPT_ChartTypeRadar</code> = 15 - 雷达图
+      </div>
+    </div>
+
+    <div class="function-block" id="SetChartTitle">
+      <div class="function-name">PbPPT_SetChartTitle(shapeId.i, title.s)</div>
+      <div class="function-desc">设置图表标题。</div>
+    </div>
+
+    <div class="function-block" id="AddChartCategory">
+      <div class="function-name">PbPPT_AddChartCategory(shapeId.i, label.s)</div>
+      <div class="function-desc">添加图表分类标签。</div>
+      <div class="example">
+<span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"第一季度"</span>)
+<span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"第二季度"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="AddChartSeries">
+      <div class="function-name">PbPPT_AddChartSeries(shapeId.i, name.s, values.s)</div>
+      <div class="function-desc">添加图表数据系列。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>图表形状ID</td></tr>
+          <tr><td>name</td><td>String</td><td>系列名称</td></tr>
+          <tr><td>values</td><td>String</td><td>系列值，逗号分隔，如 "120,200,150"</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"产品A"</span>, <span class="string">"120,200,150,300"</span>)
+<span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"产品B"</span>, <span class="string">"80,150,220,250"</span>)
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetChartHasLegend(shapeId.i, hasLegend.b)</div>
+      <div class="function-desc">设置图表是否显示图例。</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetChartStyle(shapeId.i, style.i)</div>
+      <div class="function-desc">设置图表样式编号。</div>
+    </div>
+  </div>
+
+  <!-- ==================== 图片操作 ==================== -->
+  <div class="section" id="picture">
+    <h2>图片操作</h2>
+
+    <div class="function-block" id="AddPicture">
+      <div class="function-name">PbPPT_AddPicture(slideIndex.i, imagePath.s, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">在指定幻灯片上添加一张图片。支持 PNG、JPG、BMP、GIF 等格式。当 width 和 height 为 0 时，自动检测图片尺寸。</div>
+      <div class="function-params">
+        <table>
+          <tr><th>参数</th><th>类型</th><th>说明</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>幻灯片索引</td></tr>
+          <tr><td>imagePath</td><td>String</td><td>图片文件的完整路径</td></tr>
+          <tr><td>left</td><td>Integer</td><td>左边距（EMU）</td></tr>
+          <tr><td>top</td><td>Integer</td><td>上边距（EMU）</td></tr>
+          <tr><td>width</td><td>Integer</td><td>图片宽度（EMU），0为自动检测</td></tr>
+          <tr><td>height</td><td>Integer</td><td>图片高度（EMU），0为自动检测</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>返回值：</strong> 形状ID（整数）。</div>
+      <div class="example">
+<span class="comment">; 添加指定大小的图片</span>
+<span class="variable">picId</span> = <span class="function">PbPPT_AddPicture</span>(0, <span class="string">"photo.png"</span>, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(4), <span class="function">PbPPT_InchesToEmu</span>(3))
+
+<span class="comment">; 添加自动大小的图片</span>
+<span class="variable">picId2</span> = <span class="function">PbPPT_AddPicture</span>(0, <span class="string">"logo.png"</span>, <span class="function">PbPPT_InchesToEmu</span>(5), <span class="function">PbPPT_InchesToEmu</span>(1), 0, 0)
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>注意：</strong> 相同的图片文件会自动去重，只在PPTX中存储一份，减少文件大小。
+    </div>
+  </div>
+
+  <!-- ==================== 文档属性 ==================== -->
+  <div class="section" id="properties">
+    <h2>文档属性</h2>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetTitle(title.s)</div>
+      <div class="function-desc">设置文档标题。</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetAuthor(author.s)</div>
+      <div class="function-desc">设置文档作者。</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetSubject(subject.s)</div>
+      <div class="function-desc">设置文档主题。</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetTitle()</div>
+      <div class="function-desc">获取文档标题。</div>
+      <div class="return-type"><strong>返回值：</strong> 文档标题（字符串）。</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetAuthor()</div>
+      <div class="function-desc">获取文档作者。</div>
+      <div class="return-type"><strong>返回值：</strong> 文档作者（字符串）。</div>
+    </div>
+  </div>
+
+  <!-- ==================== 单位转换 ==================== -->
+  <div class="section" id="unit">
+    <h2>单位转换</h2>
+
+    <p>PbPPT 使用 EMU（English Metric Units）作为内部单位。1英寸 = 914400 EMU，1厘米 = 360000 EMU，1磅 = 12700 EMU。</p>
+
+    <div class="function-block" id="InchesToEmu">
+      <div class="function-name">PbPPT_InchesToEmu(inches.f)</div>
+      <div class="function-desc">将英寸转换为EMU。</div>
+      <div class="example">
+<span class="variable">emu</span> = <span class="function">PbPPT_InchesToEmu</span>(1.0)   <span class="comment">; 返回 914400</span>
+<span class="variable">emu</span> = <span class="function">PbPPT_InchesToEmu</span>(2.5)   <span class="comment">; 返回 2286000</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="CmToEmu">
+      <div class="function-name">PbPPT_CmToEmu(cm.f)</div>
+      <div class="function-desc">将厘米转换为EMU。</div>
+      <div class="example">
+<span class="variable">emu</span> = <span class="function">PbPPT_CmToEmu</span>(2.54)  <span class="comment">; 返回 914400 (1英寸)</span>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_PtToEmu(pt.f)</div>
+      <div class="function-desc">将磅转换为EMU。</div>
+      <div class="example">
+<span class="variable">emu</span> = <span class="function">PbPPT_PtToEmu</span>(1.0)   <span class="comment">; 返回 12700</span>
+<span class="variable">emu</span> = <span class="function">PbPPT_PtToEmu</span>(2.0)   <span class="comment">; 返回 25400</span>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_EmuToInches(emu.i)</div>
+      <div class="function-desc">将EMU转换为英寸。</div>
+      <div class="return-type"><strong>返回值：</strong> 英寸值（浮点数）。</div>
+    </div>
+  </div>
+
+  <!-- ==================== 示例代码 ==================== -->
+  <div class="section" id="examples">
+    <h2>示例代码</h2>
+
+    <h3>示例1：创建带文本和形状的演示文稿</h3>
+    <div class="example">
+<span class="keyword">XIncludeFile</span> <span class="string">"PbPPT.pb"</span>
+
+<span class="function">PbPPT_Init</span>()
+
+<span class="keyword">If</span> <span class="function">PbPPT_Create</span>()
+  <span class="variable">slideIdx</span> = <span class="function">PbPPT_AddSlide</span>(0)
+
+  <span class="comment">; 添加标题</span>
+  <span class="variable">titleId</span> = <span class="function">PbPPT_AddTextbox</span>(<span class="variable">slideIdx</span>, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(0.5), <span class="function">PbPPT_InchesToEmu</span>(8), <span class="function">PbPPT_InchesToEmu</span>(1.5))
+  <span class="function">PbPPT_SetShapeText</span>(<span class="variable">titleId</span>, <span class="string">"PbPPT 示例"</span>)
+  <span class="function">PbPPT_SetFont</span>(<span class="variable">titleId</span>, 1, 1, <span class="string">"微软雅黑"</span>, 28, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"2E75B6"</span>)
+
+  <span class="comment">; 添加矩形</span>
+  <span class="variable">rectId</span> = <span class="function">PbPPT_AddShape</span>(<span class="variable">slideIdx</span>, <span class="variable">#PbPPT_PrstRectangle$</span>, <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(3), <span class="function">PbPPT_InchesToEmu</span>(6), <span class="function">PbPPT_InchesToEmu</span>(2))
+  <span class="function">PbPPT_SetFillSolid</span>(<span class="variable">rectId</span>, <span class="string">"4472C4"</span>)
+  <span class="function">PbPPT_SetShapeText</span>(<span class="variable">rectId</span>, <span class="string">"蓝色矩形"</span>)
+  <span class="function">PbPPT_SetFont</span>(<span class="variable">rectId</span>, 1, 1, <span class="string">"微软雅黑"</span>, 18, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"FFFFFF"</span>)
+
+  <span class="function">PbPPT_Save</span>(<span class="string">"output.pptx"</span>)
+  <span class="function">PbPPT_Close</span>()
+<span class="keyword">EndIf</span>
+    </div>
+
+    <h3>示例2：创建带图表的演示文稿</h3>
+    <div class="example">
+<span class="keyword">XIncludeFile</span> <span class="string">"PbPPT.pb"</span>
+
+<span class="function">PbPPT_Init</span>()
+
+<span class="keyword">If</span> <span class="function">PbPPT_Create</span>()
+  <span class="variable">slideIdx</span> = <span class="function">PbPPT_AddSlide</span>(0)
+
+  <span class="comment">; 添加柱状图</span>
+  <span class="variable">chartId</span> = <span class="function">PbPPT_AddChart</span>(<span class="variable">slideIdx</span>, <span class="variable">#PbPPT_ChartTypeColumnClustered</span>, <span class="function">PbPPT_InchesToEmu</span>(0.5), <span class="function">PbPPT_InchesToEmu</span>(1.5), <span class="function">PbPPT_InchesToEmu</span>(9), <span class="function">PbPPT_InchesToEmu</span>(5.5))
+  <span class="function">PbPPT_SetChartTitle</span>(<span class="variable">chartId</span>, <span class="string">"季度销售数据"</span>)
+
+  <span class="comment">; 添加分类</span>
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q1"</span>)
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q2"</span>)
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q3"</span>)
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q4"</span>)
+
+  <span class="comment">; 添加数据系列</span>
+  <span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"产品A"</span>, <span class="string">"120,200,150,300"</span>)
+  <span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"产品B"</span>, <span class="string">"80,150,220,250"</span>)
+
+  <span class="function">PbPPT_SetChartHasLegend</span>(<span class="variable">chartId</span>, <span class="variable">#True</span>)
+  <span class="function">PbPPT_Save</span>(<span class="string">"chart_output.pptx"</span>)
+  <span class="function">PbPPT_Close</span>()
+<span class="keyword">EndIf</span>
+    </div>
+  </div>
+
+  <!-- ==================== 版本历史 ==================== -->
+  <div class="section" id="changelog">
+    <h2>版本历史</h2>
+
+    <h3>v1.8 (2026-04-24)</h3>
+    <ul>
+      <li>[修复] 图片无法显示的问题：修正slide rels中图片Target路径和r:embed引用</li>
+      <li>[修复] 图表无法显示的问题：新增完整的chart XML生成器</li>
+      <li>[修复] 图表XML中c:chart元素嵌套错误</li>
+      <li>[修复] Content_Types.xml中缺少图片扩展名Default映射</li>
+      <li>[修复] WriteSlideRelsXML和WriteSlideXML调用顺序导致r:id为空</li>
+      <li>[新增] 结构体添加chartStyle和chartHasLegend字段</li>
+      <li>[新增] 图表类型常量（LineStacked、LineStacked100、DoughnutExploded）</li>
+      <li>[优化] SetChartHasLegend和SetChartStyle改为使用独立字段存储</li>
+      <li>[优化] 统一图表数据格式解析</li>
+    </ul>
+
+    <h3>v1.7 (2026-04-24)</h3>
+    <ul>
+      <li>[修复] 生成的PPTX文件无法被Office工具打开</li>
+      <li>[修复] presentation.xml中p:sldId的r:id属性为空</li>
+      <li>[修复] .rels文件引用不存在的thumbnail.jpeg</li>
+      <li>[修复] 缺少p:notesSz元素</li>
+      <li>[修复] UTF-8编码缓冲区溢出问题</li>
+      <li>[新增] 添加p:notesSz元素（备注页尺寸）</li>
+      <li>[优化] 移除根关系中对不存在缩略图的引用</li>
+    </ul>
+
+    <h3>v1.6 (2026-04-23)</h3>
+    <ul>
+      <li>[新增] 10个示例文件（空白、文本、形状、图片、表格、打开、修改、图表、样式、尺寸）</li>
+      <li>[新增] 示例文件扩展名改为.pb</li>
+      <li>[新增] 图片自动尺寸检测</li>
+      <li>[新增] 图片SHA1指纹去重功能</li>
+      <li>[修复] 示例文件保存路径问题</li>
+      <li>[优化] 所有示例文件转换为UTF-8 BOM格式</li>
+    </ul>
+
+    <h3>v1.5 (2026-04-22)</h3>
+    <ul>
+      <li>[新增] 图表功能接口（AddChart、SetChartTitle、AddChartCategory、AddChartSeries）</li>
+      <li>[新增] 图表类型枚举（柱形图、条形图、折线图、饼图、圆环图、雷达图等）</li>
+      <li>[新增] 连接符功能（AddConnector）</li>
+      <li>[新增] 段落对齐功能（SetParagraphAlignment）</li>
+      <li>[新增] 富文本Run功能（AddRun）</li>
+      <li>[新增] 形状旋转功能（SetShapeRotation）</li>
+    </ul>
+
+    <h3>v1.4 (2026-04-21)</h3>
+    <ul>
+      <li>[新增] 表格功能（AddTable、SetCellValue、GetCellValue、SetColWidth、SetRowHeight）</li>
+      <li>[新增] 图片嵌入功能（AddPicture），支持PNG/JPG/BMP/GIF等</li>
+      <li>[新增] 二进制部件管理（AddBinaryPart）</li>
+      <li>[新增] 文件指纹计算（CalcFileFingerprint）</li>
+      <li>[新增] 图片内容类型自动识别（GetImageContentType）</li>
+    </ul>
+
+    <h3>v1.3 (2026-04-20)</h3>
+    <ul>
+      <li>[新增] 形状样式设置（SetFillSolid、SetFillNone、SetLineFormat）</li>
+      <li>[新增] 字体设置功能（SetFont）</li>
+      <li>[新增] 自动形状支持（矩形、圆形、三角形、菱形、五角星、箭头等）</li>
+      <li>[新增] 预设形状常量定义</li>
+      <li>[新增] 形状填充类型枚举</li>
+    </ul>
+
+    <h3>v1.2 (2026-04-19)</h3>
+    <ul>
+      <li>[新增] 文本框功能（AddTextbox、SetShapeText）</li>
+      <li>[新增] 多段落文本支持</li>
+      <li>[新增] 形状创建基础框架（CreateShape）</li>
+      <li>[新增] 形状类型枚举定义</li>
+      <li>[新增] 幻灯片尺寸设置（SetSlideWidth、SetSlideHeight）</li>
+      <li>[新增] 标准和宽屏幻灯片尺寸常量</li>
+    </ul>
+
+    <h3>v1.1 (2026-04-18)</h3>
+    <ul>
+      <li>[新增] 幻灯片添加功能（AddSlide）</li>
+      <li>[新增] 幻灯片版式管理</li>
+      <li>[新增] 幻灯片母版XML生成</li>
+      <li>[新增] 幻灯片版式XML生成（10种版式）</li>
+      <li>[新增] 主题XML生成</li>
+      <li>[新增] 演示文稿属性XML生成</li>
+      <li>[新增] OPC包关系管理</li>
+    </ul>
+
+    <h3>v1.0 (2026-04-17)</h3>
+    <ul>
+      <li>[新增] 初始项目创建，参考python-pptx（v1.0.2）编写</li>
+      <li>[新增] 演示文稿创建功能（PbPPT_Create、PbPPT_Save）</li>
+      <li>[新增] 演示文稿打开功能（PbPPT_Open，部分实现）</li>
+      <li>[新增] OOXML规范常量定义</li>
+      <li>[新增] EMU单位系统转换函数</li>
+      <li>[新增] ZIP打包支持</li>
+      <li>[新增] XML辅助模块</li>
+      <li>[新增] OPC包管理模块</li>
+      <li>[新增] PackURI路径处理</li>
+      <li>[新增] 文档属性设置</li>
+      <li>[新增] 初始化和清理函数</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p>PbPPT Library v1.8 | 作者: lcode.cn | 许可证: Apache 2.0</p>
+  </div>
+
+</div>
+
+</body>
+</html>
