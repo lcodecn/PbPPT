@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PbPPT Library Reference Documentation</title>
+  <style>
+    body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; padding: 0; background: #f8f8f8; color: #333; }
+    .header { background: linear-gradient(135deg, #d44300 0%, #9e2f00 100%); color: white; padding: 30px; text-align: center; }
+    .header h1 { margin: 0; font-size: 2.2em; }
+    .header .version { font-size: 1em; opacity: 0.9; margin-top: 10px; }
+    .header .author { font-size: 0.9em; opacity: 0.8; margin-top: 5px; }
+    .nav { background: #2b2b2b; padding: 15px; overflow: auto; }
+    .nav a { color: #fff; text-decoration: none; padding: 5px 15px; display: inline-block; font-size: 0.9em; }
+    .nav a:hover { background: #444; border-radius: 4px; }
+    .container { max-width: 960px; margin: 20px auto; padding: 0 20px; }
+    .section { background: white; margin: 20px 0; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .section h2 { color: #d44300; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-top: 0; }
+    .section h3 { color: #333; margin-top: 25px; }
+    .function-block { background: #f5f5f5; padding: 15px; margin: 15px 0; border-left: 4px solid #d44300; border-radius: 0 4px 4px 0; }
+    .function-name { color: #c7254e; font-family: "Consolas", "Courier New", monospace; font-size: 1.1em; font-weight: bold; }
+    .function-desc { margin: 10px 0; line-height: 1.6; }
+    .function-params { margin: 10px 0; }
+    .function-params table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .function-params th { background: #e8e8e8; padding: 8px; text-align: left; border: 1px solid #ddd; }
+    .function-params td { padding: 8px; border: 1px solid #ddd; }
+    .return-type { background: #e8f5e9; padding: 8px; border-radius: 4px; margin: 10px 0; }
+    .example { background: #263238; color: #e0e0e0; padding: 15px; border-radius: 4px; overflow-x: auto; font-family: "Consolas", "Courier New", monospace; font-size: 0.9em; margin: 10px 0; white-space: pre; line-height: 1.6; }
+    .example .comment { color: #80cbc4; }
+    .example .keyword { color: #c792ea; }
+    .example .function { color: #82b1ff; }
+    .example .string { color: #c3e88d; }
+    .example .number { color: #f78c6c; }
+    .example .variable { color: #ffcb6b; }
+    .toc { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .toc h3 { margin-top: 0; }
+    .toc ul { list-style: none; padding-left: 0; }
+    .toc li { padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
+    .toc a { color: #d44300; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .note { background: #fff3cd; padding: 12px; border-left: 4px solid #ffc107; border-radius: 4px; margin: 15px 0; }
+    .note strong { color: #856404; }
+    .footer { text-align: center; padding: 20px; color: #666; font-size: 0.9em; margin-top: 40px; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "Consolas", "Courier New", monospace; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>PbPPT Library</h1>
+  <div class="version">Version 1.8</div>
+  <div class="author">Author: lcode.cn | License: Apache 2.0</div>
+</div>
+
+<div class="nav">
+  <a href="#overview">Overview</a>
+  <a href="#presentation">Presentation</a>
+  <a href="#slide">Slides</a>
+  <a href="#shape">Shapes</a>
+  <a href="#text">Text</a>
+  <a href="#style">Styles</a>
+  <a href="#table">Tables</a>
+  <a href="#chart">Charts</a>
+  <a href="#picture">Pictures</a>
+  <a href="#properties">Properties</a>
+  <a href="#unit">Units</a>
+  <a href="#examples">Examples</a>
+  <a href="#changelog">Changelog</a>
+</div>
+
+<div class="container">
+
+  <div class="section" id="overview">
+    <h2>Overview</h2>
+    <p>PbPPT is a PureBasic library for creating and reading PowerPoint pptx files without requiring Microsoft Office or any third-party dependencies.</p>
+    <p>This library is ported from the Python python-pptx project (v1.0.2), using PureBasic's built-in XML and Packer libraries.</p>
+    <div class="note">
+      <strong>Note:</strong> Before using PbPPT, you need to add <code>XIncludeFile "PbPPT.pb"</code> at the beginning of your code and call <code>PbPPT_Init()</code> to initialize the library.
+    </div>
+    <h3>Key Features</h3>
+    <ul>
+      <li>Create and read PowerPoint pptx files</li>
+      <li>Add text boxes, auto shapes, pictures, tables, charts, connectors</li>
+      <li>Set font styles (name, size, color, bold, italic, underline)</li>
+      <li>Set shape styles (solid fill, no fill, line format, rotation)</li>
+      <li>Multi-paragraph text and rich text Run support</li>
+      <li>Table cell read/write, row height and column width settings</li>
+      <li>Chart data series and category label settings</li>
+      <li>Document property settings (title, author, subject, etc.)</li>
+      <li>Slide dimension settings (standard 4:3, widescreen 16:9, custom)</li>
+      <li>Image deduplication to reduce file size</li>
+    </ul>
+  </div>
+
+  <div class="toc">
+    <h3>Function Index</h3>
+    <ul>
+      <li><a href="#Init">Init</a> - Initialize library</li>
+      <li><a href="#Create">Create</a> - Create presentation</li>
+      <li><a href="#Open">Open</a> - Open presentation</li>
+      <li><a href="#Save">Save</a> - Save presentation</li>
+      <li><a href="#Close">Close</a> - Close presentation</li>
+      <li><a href="#AddSlide">AddSlide</a> - Add slide</li>
+      <li><a href="#AddTextbox">AddTextbox</a> - Add text box</li>
+      <li><a href="#AddShape">AddShape</a> - Add auto shape</li>
+      <li><a href="#AddPicture">AddPicture</a> - Add picture</li>
+      <li><a href="#AddTable">AddTable</a> - Add table</li>
+      <li><a href="#AddChart">AddChart</a> - Add chart</li>
+      <li><a href="#AddConnector">AddConnector</a> - Add connector</li>
+      <li><a href="#SetShapeText">SetShapeText</a> - Set shape text</li>
+      <li><a href="#SetFont">SetFont</a> - Set font</li>
+      <li><a href="#AddRun">AddRun</a> - Add rich text Run</li>
+      <li><a href="#SetFillSolid">SetFillSolid</a> - Set solid fill</li>
+      <li><a href="#SetFillNone">SetFillNone</a> - Set no fill</li>
+      <li><a href="#SetLineFormat">SetLineFormat</a> - Set line format</li>
+      <li><a href="#SetShapeRotation">SetShapeRotation</a> - Set rotation</li>
+      <li><a href="#SetCellValue">SetCellValue</a> - Set cell value</li>
+      <li><a href="#SetChartTitle">SetChartTitle</a> - Set chart title</li>
+      <li><a href="#AddChartCategory">AddChartCategory</a> - Add chart category</li>
+      <li><a href="#AddChartSeries">AddChartSeries</a> - Add chart series</li>
+      <li><a href="#InchesToEmu">InchesToEmu</a> - Inches to EMU</li>
+      <li><a href="#CmToEmu">CmToEmu</a> - Centimeters to EMU</li>
+    </ul>
+  </div>
+
+  <!-- ==================== Presentation Operations ==================== -->
+  <div class="section" id="presentation">
+    <h2>Presentation Operations</h2>
+
+    <div class="function-block" id="Init">
+      <div class="function-name">PbPPT_Init()</div>
+      <div class="function-desc">Initialize the PbPPT library. This function must be called before using any other PbPPT functions.</div>
+      <div class="example">
+<span class="comment">; Initialize the PbPPT library</span>
+<span class="function">PbPPT_Init</span>()
+      </div>
+    </div>
+
+    <div class="function-block" id="Create">
+      <div class="function-name">PbPPT_Create()</div>
+      <div class="function-desc">Create a new PowerPoint presentation. After creation, you can add slides and shapes.</div>
+      <div class="return-type"><strong>Returns:</strong> #True on success, #False on failure.</div>
+      <div class="example">
+<span class="function">PbPPT_Init</span>()
+<span class="keyword">If</span> <span class="function">PbPPT_Create</span>()
+  <span class="comment">; Presentation created successfully</span>
+  <span class="function">PbPPT_AddSlide</span>(0)
+  <span class="function">PbPPT_Save</span>(<span class="string">"output.pptx"</span>)
+  <span class="function">PbPPT_Close</span>()
+<span class="keyword">EndIf</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="Open">
+      <div class="function-name">PbPPT_Open(filename.s)</div>
+      <div class="function-desc">Open an existing PowerPoint file. You can read file information and modify it before saving.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>filename</td><td>String</td><td>Full path to the pptx file</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> #True on success, #False on failure.</div>
+    </div>
+
+    <div class="function-block" id="Save">
+      <div class="function-name">PbPPT_Save(filename.s)</div>
+      <div class="function-desc">Save the presentation as a pptx file. Generates a file compliant with the Office Open XML standard.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>filename</td><td>String</td><td>Full path for the output file (.pptx extension)</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> #True on success, #False on failure.</div>
+      <div class="example">
+<span class="keyword">If</span> <span class="function">PbPPT_Save</span>(<span class="string">"output.pptx"</span>)
+  <span class="function">MessageRequester</span>(<span class="string">"Success"</span>, <span class="string">"File saved!"</span>)
+<span class="keyword">Else</span>
+  <span class="function">MessageRequester</span>(<span class="string">"Error"</span>, <span class="string">"Save failed!"</span>)
+<span class="keyword">EndIf</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="Close">
+      <div class="function-name">PbPPT_Close()</div>
+      <div class="function-desc">Close the current presentation and release all associated resources. Should be called after saving.</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetSlideCount()</div>
+      <div class="function-desc">Get the number of slides in the current presentation.</div>
+      <div class="return-type"><strong>Returns:</strong> Number of slides (integer).</div>
+    </div>
+  </div>
+
+  <!-- ==================== Slide Operations ==================== -->
+  <div class="section" id="slide">
+    <h2>Slide Operations</h2>
+
+    <div class="function-block" id="AddSlide">
+      <div class="function-name">PbPPT_AddSlide(layoutIndex.i)</div>
+      <div class="function-desc">Add a new slide to the end of the presentation.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>layoutIndex</td><td>Integer</td><td>Layout index (currently only 0=blank layout)</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> Slide index (integer), starting from 0.</div>
+      <div class="example">
+<span class="comment">; Add a blank slide</span>
+<span class="variable">slideIdx</span> = <span class="function">PbPPT_AddSlide</span>(0)
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetSlideWidth(width.i)</div>
+      <div class="function-desc">Set the slide width. Unit is EMU (English Metric Units).</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>width</td><td>Integer</td><td>Slide width (EMU)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetSlideHeight(height.i)</div>
+      <div class="function-desc">Set the slide height. Unit is EMU.</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetSlideWidth()</div>
+      <div class="function-desc">Get the current slide width (EMU).</div>
+      <div class="return-type"><strong>Returns:</strong> Slide width (integer, EMU).</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetSlideHeight()</div>
+      <div class="function-desc">Get the current slide height (EMU).</div>
+      <div class="return-type"><strong>Returns:</strong> Slide height (integer, EMU).</div>
+    </div>
+
+    <div class="note">
+      <strong>Common slide dimension constants:</strong><br>
+      <code>#PbPPT_STANDARD_SLIDE_WIDTH</code> = 9144000 (10 inches, standard 4:3)<br>
+      <code>#PbPPT_STANDARD_SLIDE_HEIGHT</code> = 6858000 (7.5 inches, standard 4:3)<br>
+      <code>#PbPPT_WIDESCREEN_SLIDE_WIDTH</code> = 12192000 (13.333 inches, widescreen 16:9)<br>
+      <code>#PbPPT_WIDESCREEN_SLIDE_HEIGHT</code> = 6858000 (7.5 inches, widescreen 16:9)
+    </div>
+  </div>
+
+  <!-- ==================== Shape Operations ==================== -->
+  <div class="section" id="shape">
+    <h2>Shape Operations</h2>
+
+    <div class="function-block" id="AddTextbox">
+      <div class="function-name">PbPPT_AddTextbox(slideIndex.i, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">Add a text box on the specified slide.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>Slide index (starting from 0)</td></tr>
+          <tr><td>left</td><td>Integer</td><td>Left offset (EMU)</td></tr>
+          <tr><td>top</td><td>Integer</td><td>Top offset (EMU)</td></tr>
+          <tr><td>width</td><td>Integer</td><td>Text box width (EMU)</td></tr>
+          <tr><td>height</td><td>Integer</td><td>Text box height (EMU)</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> Shape ID (integer), used for subsequent operations.</div>
+      <div class="example">
+<span class="variable">tbId</span> = <span class="function">PbPPT_AddTextbox</span>(0, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(8), <span class="function">PbPPT_InchesToEmu</span>(2))
+<span class="function">PbPPT_SetShapeText</span>(<span class="variable">tbId</span>, <span class="string">"Hello PbPPT!"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="AddShape">
+      <div class="function-name">PbPPT_AddShape(slideIndex.i, prstGeom.s, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">Add an auto shape on the specified slide.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>Slide index</td></tr>
+          <tr><td>prstGeom</td><td>String</td><td>Preset shape name, e.g. #PbPPT_PrstRectangle$</td></tr>
+          <tr><td>left</td><td>Integer</td><td>Left offset (EMU)</td></tr>
+          <tr><td>top</td><td>Integer</td><td>Top offset (EMU)</td></tr>
+          <tr><td>width</td><td>Integer</td><td>Shape width (EMU)</td></tr>
+          <tr><td>height</td><td>Integer</td><td>Shape height (EMU)</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> Shape ID (integer).</div>
+      <div class="example">
+<span class="comment">; Add a blue rectangle</span>
+<span class="variable">rectId</span> = <span class="function">PbPPT_AddShape</span>(0, <span class="variable">#PbPPT_PrstRectangle$</span>, <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(3), <span class="function">PbPPT_InchesToEmu</span>(6), <span class="function">PbPPT_InchesToEmu</span>(2))
+<span class="function">PbPPT_SetFillSolid</span>(<span class="variable">rectId</span>, <span class="string">"4472C4"</span>)
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Common preset shape constants:</strong><br>
+      <code>#PbPPT_PrstRectangle$</code> - Rectangle<br>
+      <code>#PbPPT_PrstRoundRectangle$</code> - Rounded Rectangle<br>
+      <code>#PbPPT_PrstEllipse$</code> - Ellipse/Circle<br>
+      <code>#PbPPT_PrstTriangle$</code> - Triangle<br>
+      <code>#PbPPT_PrstDiamond$</code> - Diamond<br>
+      <code>#PbPPT_PrstStar5$</code> - 5-Point Star<br>
+      <code>#PbPPT_PrstArrow$</code> - Arrow
+    </div>
+
+    <div class="function-block" id="AddConnector">
+      <div class="function-name">PbPPT_AddConnector(slideIndex.i, beginX.i, beginY.i, endX.i, endY.i)</div>
+      <div class="function-desc">Add a straight-line connector on the specified slide.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>Slide index</td></tr>
+          <tr><td>beginX</td><td>Integer</td><td>Start X coordinate (EMU)</td></tr>
+          <tr><td>beginY</td><td>Integer</td><td>Start Y coordinate (EMU)</td></tr>
+          <tr><td>endX</td><td>Integer</td><td>End X coordinate (EMU)</td></tr>
+          <tr><td>endY</td><td>Integer</td><td>End Y coordinate (EMU)</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> Shape ID (integer).</div>
+    </div>
+  </div>
+
+  <!-- ==================== Text Operations ==================== -->
+  <div class="section" id="text">
+    <h2>Text Operations</h2>
+
+    <div class="function-block" id="SetShapeText">
+      <div class="function-name">PbPPT_SetShapeText(shapeId.i, text.s)</div>
+      <div class="function-desc">Set the text content of a shape. Use line breaks (#LF$) to separate multiple paragraphs.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Shape ID</td></tr>
+          <tr><td>text</td><td>String</td><td>Text content, #LF$ separates paragraphs</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; Set multi-paragraph text</span>
+<span class="function">PbPPT_SetShapeText</span>(<span class="variable">tbId</span>, <span class="string">"Paragraph 1"</span> + <span class="variable">#LF$</span> + <span class="string">"Paragraph 2"</span> + <span class="variable">#LF$</span> + <span class="string">"Paragraph 3"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="SetFont">
+      <div class="function-name">PbPPT_SetFont(shapeId.i, paraIdx.i, runIdx.i, name.s, size.i, bold.b, italic.b, underline.b, color.s)</div>
+      <div class="function-desc">Set the font style of text in a shape.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Shape ID</td></tr>
+          <tr><td>paraIdx</td><td>Integer</td><td>Paragraph index (starting from 1)</td></tr>
+          <tr><td>runIdx</td><td>Integer</td><td>Run index (starting from 1)</td></tr>
+          <tr><td>name</td><td>String</td><td>Font name, e.g. "Arial"</td></tr>
+          <tr><td>size</td><td>Integer</td><td>Font size (points), e.g. 28</td></tr>
+          <tr><td>bold</td><td>Boolean</td><td>Bold</td></tr>
+          <tr><td>italic</td><td>Boolean</td><td>Italic</td></tr>
+          <tr><td>underline</td><td>Boolean</td><td>Underline</td></tr>
+          <tr><td>color</td><td>String</td><td>Font color (6-digit hex), e.g. "FF0000"</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; Set paragraph 1, run 1 to Arial 28pt bold blue</span>
+<span class="function">PbPPT_SetFont</span>(<span class="variable">tbId</span>, 1, 1, <span class="string">"Arial"</span>, 28, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"2E75B6"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="AddRun">
+      <div class="function-name">PbPPT_AddRun(shapeId.i, paraIdx.i, text.s, name.s, size.i, bold.b, italic.b, underline.b, color.s)</div>
+      <div class="function-desc">Add a rich text Run at the end of the specified paragraph, enabling different styles within the same paragraph.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Shape ID</td></tr>
+          <tr><td>paraIdx</td><td>Integer</td><td>Paragraph index (starting from 1)</td></tr>
+          <tr><td>text</td><td>String</td><td>Run text content</td></tr>
+          <tr><td>name</td><td>String</td><td>Font name</td></tr>
+          <tr><td>size</td><td>Integer</td><td>Font size (points)</td></tr>
+          <tr><td>bold</td><td>Boolean</td><td>Bold</td></tr>
+          <tr><td>italic</td><td>Boolean</td><td>Italic</td></tr>
+          <tr><td>underline</td><td>Boolean</td><td>Underline</td></tr>
+          <tr><td>color</td><td>String</td><td>Font color (6-digit hex)</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; Add a red bold Run</span>
+<span class="function">PbPPT_AddRun</span>(<span class="variable">tbId</span>, 1, <span class="string">"(red bold)"</span>, <span class="string">"Arial"</span>, 14, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"FF0000"</span>)
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetParagraphAlignment(shapeId.i, paraIdx.i, align.i)</div>
+      <div class="function-desc">Set paragraph alignment.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Shape ID</td></tr>
+          <tr><td>paraIdx</td><td>Integer</td><td>Paragraph index (starting from 1)</td></tr>
+          <tr><td>align</td><td>Integer</td><td>Alignment constant</td></tr>
+        </table>
+      </div>
+      <div class="note">
+        <strong>Alignment constants:</strong><br>
+        <code>#PbPPT_AlignLeft</code> = 0 - Left align<br>
+        <code>#PbPPT_AlignCenter</code> = 1 - Center<br>
+        <code>#PbPPT_AlignRight</code> = 2 - Right align<br>
+        <code>#PbPPT_AlignJustify</code> = 3 - Justify
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Style Operations ==================== -->
+  <div class="section" id="style">
+    <h2>Style Operations</h2>
+
+    <div class="function-block" id="SetFillSolid">
+      <div class="function-name">PbPPT_SetFillSolid(shapeId.i, color.s)</div>
+      <div class="function-desc">Set a solid fill for the shape.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Shape ID</td></tr>
+          <tr><td>color</td><td>String</td><td>Fill color (6-digit hex), e.g. "4472C4"</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="function">PbPPT_SetFillSolid</span>(<span class="variable">shapeId</span>, <span class="string">"4472C4"</span>)  <span class="comment">; Blue fill</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="SetFillNone">
+      <div class="function-name">PbPPT_SetFillNone(shapeId.i)</div>
+      <div class="function-desc">Set the shape to have no fill (transparent).</div>
+    </div>
+
+    <div class="function-block" id="SetLineFormat">
+      <div class="function-name">PbPPT_SetLineFormat(shapeId.i, width.i, color.s)</div>
+      <div class="function-desc">Set the line format for the shape.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Shape ID</td></tr>
+          <tr><td>width</td><td>Integer</td><td>Line width (EMU), use PbPPT_PtToEmu to convert</td></tr>
+          <tr><td>color</td><td>String</td><td>Line color (6-digit hex)</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="comment">; Set 1pt dark blue line</span>
+<span class="function">PbPPT_SetLineFormat</span>(<span class="variable">shapeId</span>, <span class="function">PbPPT_PtToEmu</span>(1), <span class="string">"2F528F"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="SetShapeRotation">
+      <div class="function-name">PbPPT_SetShapeRotation(shapeId.i, angle.f)</div>
+      <div class="function-desc">Set the rotation angle of the shape.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Shape ID</td></tr>
+          <tr><td>angle</td><td>Float</td><td>Rotation angle (degrees), positive=clockwise, negative=counter-clockwise</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="function">PbPPT_SetShapeRotation</span>(<span class="variable">shapeId</span>, 45)   <span class="comment">; Rotate 45 degrees clockwise</span>
+<span class="function">PbPPT_SetShapeRotation</span>(<span class="variable">shapeId</span>, -15)  <span class="comment">; Rotate 15 degrees counter-clockwise</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Table Operations ==================== -->
+  <div class="section" id="table">
+    <h2>Table Operations</h2>
+
+    <div class="function-block" id="AddTable">
+      <div class="function-name">PbPPT_AddTable(slideIndex.i, rows.i, cols.i, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">Add a table on the specified slide.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>Slide index</td></tr>
+          <tr><td>rows</td><td>Integer</td><td>Number of rows</td></tr>
+          <tr><td>cols</td><td>Integer</td><td>Number of columns</td></tr>
+          <tr><td>left</td><td>Integer</td><td>Left offset (EMU)</td></tr>
+          <tr><td>top</td><td>Integer</td><td>Top offset (EMU)</td></tr>
+          <tr><td>width</td><td>Integer</td><td>Table width (EMU)</td></tr>
+          <tr><td>height</td><td>Integer</td><td>Table height (EMU)</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> Shape ID (integer).</div>
+      <div class="example">
+<span class="variable">tblId</span> = <span class="function">PbPPT_AddTable</span>(0, 4, 3, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(8), <span class="function">PbPPT_InchesToEmu</span>(3))
+<span class="function">PbPPT_SetCellValue</span>(<span class="variable">tblId</span>, 1, 1, <span class="string">"Name"</span>)
+<span class="function">PbPPT_SetCellValue</span>(<span class="variable">tblId</span>, 1, 2, <span class="string">"Age"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="SetCellValue">
+      <div class="function-name">PbPPT_SetCellValue(shapeId.i, row.i, col.i, text.s)</div>
+      <div class="function-desc">Set the value of a table cell.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Table shape ID</td></tr>
+          <tr><td>row</td><td>Integer</td><td>Row number (starting from 1)</td></tr>
+          <tr><td>col</td><td>Integer</td><td>Column number (starting from 1)</td></tr>
+          <tr><td>text</td><td>String</td><td>Cell text</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetCellValue(shapeId.i, row.i, col.i)</div>
+      <div class="function-desc">Get the value of a table cell.</div>
+      <div class="return-type"><strong>Returns:</strong> Cell text (string).</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetColWidth(shapeId.i, col.i, width.i)</div>
+      <div class="function-desc">Set the column width of a table.</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetRowHeight(shapeId.i, row.i, height.i)</div>
+      <div class="function-desc">Set the row height of a table.</div>
+    </div>
+  </div>
+
+  <!-- ==================== Chart Operations ==================== -->
+  <div class="section" id="chart">
+    <h2>Chart Operations</h2>
+
+    <div class="function-block" id="AddChart">
+      <div class="function-name">PbPPT_AddChart(slideIndex.i, chartType.i, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">Add a chart on the specified slide.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>Slide index</td></tr>
+          <tr><td>chartType</td><td>Integer</td><td>Chart type constant</td></tr>
+          <tr><td>left</td><td>Integer</td><td>Left offset (EMU)</td></tr>
+          <tr><td>top</td><td>Integer</td><td>Top offset (EMU)</td></tr>
+          <tr><td>width</td><td>Integer</td><td>Chart width (EMU)</td></tr>
+          <tr><td>height</td><td>Integer</td><td>Chart height (EMU)</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> Shape ID (integer).</div>
+      <div class="note">
+        <strong>Chart type constants:</strong><br>
+        <code>#PbPPT_ChartTypeColumnClustered</code> = 1 - Clustered Column<br>
+        <code>#PbPPT_ChartTypeColumnStacked</code> = 2 - Stacked Column<br>
+        <code>#PbPPT_ChartTypeBarClustered</code> = 4 - Clustered Bar<br>
+        <code>#PbPPT_ChartTypeLine</code> = 8 - Line<br>
+        <code>#PbPPT_ChartTypeLineMarkers</code> = 9 - Line with Markers<br>
+        <code>#PbPPT_ChartTypePie</code> = 10 - Pie<br>
+        <code>#PbPPT_ChartTypePieExploded</code> = 11 - Exploded Pie<br>
+        <code>#PbPPT_ChartTypeDoughnut</code> = 14 - Doughnut<br>
+        <code>#PbPPT_ChartTypeRadar</code> = 15 - Radar
+      </div>
+    </div>
+
+    <div class="function-block" id="SetChartTitle">
+      <div class="function-name">PbPPT_SetChartTitle(shapeId.i, title.s)</div>
+      <div class="function-desc">Set the chart title.</div>
+    </div>
+
+    <div class="function-block" id="AddChartCategory">
+      <div class="function-name">PbPPT_AddChartCategory(shapeId.i, label.s)</div>
+      <div class="function-desc">Add a chart category label.</div>
+      <div class="example">
+<span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q1"</span>)
+<span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q2"</span>)
+      </div>
+    </div>
+
+    <div class="function-block" id="AddChartSeries">
+      <div class="function-name">PbPPT_AddChartSeries(shapeId.i, name.s, values.s)</div>
+      <div class="function-desc">Add a chart data series.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>shapeId</td><td>Integer</td><td>Chart shape ID</td></tr>
+          <tr><td>name</td><td>String</td><td>Series name</td></tr>
+          <tr><td>values</td><td>String</td><td>Series values, comma-separated, e.g. "120,200,150"</td></tr>
+        </table>
+      </div>
+      <div class="example">
+<span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"Product A"</span>, <span class="string">"120,200,150,300"</span>)
+<span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"Product B"</span>, <span class="string">"80,150,220,250"</span>)
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetChartHasLegend(shapeId.i, hasLegend.b)</div>
+      <div class="function-desc">Set whether the chart displays a legend.</div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetChartStyle(shapeId.i, style.i)</div>
+      <div class="function-desc">Set the chart style number.</div>
+    </div>
+  </div>
+
+  <!-- ==================== Picture Operations ==================== -->
+  <div class="section" id="picture">
+    <h2>Picture Operations</h2>
+
+    <div class="function-block" id="AddPicture">
+      <div class="function-name">PbPPT_AddPicture(slideIndex.i, imagePath.s, left.i, top.i, width.i, height.i)</div>
+      <div class="function-desc">Add a picture on the specified slide. Supports PNG, JPG, BMP, GIF formats. When width and height are 0, the image size is auto-detected.</div>
+      <div class="function-params">
+        <table>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+          <tr><td>slideIndex</td><td>Integer</td><td>Slide index</td></tr>
+          <tr><td>imagePath</td><td>String</td><td>Full path to the image file</td></tr>
+          <tr><td>left</td><td>Integer</td><td>Left offset (EMU)</td></tr>
+          <tr><td>top</td><td>Integer</td><td>Top offset (EMU)</td></tr>
+          <tr><td>width</td><td>Integer</td><td>Picture width (EMU), 0 for auto-detect</td></tr>
+          <tr><td>height</td><td>Integer</td><td>Picture height (EMU), 0 for auto-detect</td></tr>
+        </table>
+      </div>
+      <div class="return-type"><strong>Returns:</strong> Shape ID (integer).</div>
+      <div class="example">
+<span class="comment">; Add picture with specified size</span>
+<span class="variable">picId</span> = <span class="function">PbPPT_AddPicture</span>(0, <span class="string">"photo.png"</span>, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(4), <span class="function">PbPPT_InchesToEmu</span>(3))
+
+<span class="comment">; Add picture with auto size</span>
+<span class="variable">picId2</span> = <span class="function">PbPPT_AddPicture</span>(0, <span class="string">"logo.png"</span>, <span class="function">PbPPT_InchesToEmu</span>(5), <span class="function">PbPPT_InchesToEmu</span>(1), 0, 0)
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> Identical image files are automatically deduplicated, storing only one copy in the PPTX to reduce file size.
+    </div>
+  </div>
+
+  <!-- ==================== Document Properties ==================== -->
+  <div class="section" id="properties">
+    <h2>Document Properties</h2>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetTitle(title.s)</div>
+      <div class="function-desc">Set the document title.</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetAuthor(author.s)</div>
+      <div class="function-desc">Set the document author.</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_SetSubject(subject.s)</div>
+      <div class="function-desc">Set the document subject.</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetTitle()</div>
+      <div class="function-desc">Get the document title.</div>
+      <div class="return-type"><strong>Returns:</strong> Document title (string).</div>
+    </div>
+    <div class="function-block">
+      <div class="function-name">PbPPT_GetAuthor()</div>
+      <div class="function-desc">Get the document author.</div>
+      <div class="return-type"><strong>Returns:</strong> Document author (string).</div>
+    </div>
+  </div>
+
+  <!-- ==================== Unit Conversion ==================== -->
+  <div class="section" id="unit">
+    <h2>Unit Conversion</h2>
+
+    <p>PbPPT uses EMU (English Metric Units) as its internal unit. 1 inch = 914400 EMU, 1 cm = 360000 EMU, 1 point = 12700 EMU.</p>
+
+    <div class="function-block" id="InchesToEmu">
+      <div class="function-name">PbPPT_InchesToEmu(inches.f)</div>
+      <div class="function-desc">Convert inches to EMU.</div>
+      <div class="example">
+<span class="variable">emu</span> = <span class="function">PbPPT_InchesToEmu</span>(1.0)   <span class="comment">; Returns 914400</span>
+<span class="variable">emu</span> = <span class="function">PbPPT_InchesToEmu</span>(2.5)   <span class="comment">; Returns 2286000</span>
+      </div>
+    </div>
+
+    <div class="function-block" id="CmToEmu">
+      <div class="function-name">PbPPT_CmToEmu(cm.f)</div>
+      <div class="function-desc">Convert centimeters to EMU.</div>
+      <div class="example">
+<span class="variable">emu</span> = <span class="function">PbPPT_CmToEmu</span>(2.54)  <span class="comment">; Returns 914400 (1 inch)</span>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_PtToEmu(pt.f)</div>
+      <div class="function-desc">Convert points to EMU.</div>
+      <div class="example">
+<span class="variable">emu</span> = <span class="function">PbPPT_PtToEmu</span>(1.0)   <span class="comment">; Returns 12700</span>
+      </div>
+    </div>
+
+    <div class="function-block">
+      <div class="function-name">PbPPT_EmuToInches(emu.i)</div>
+      <div class="function-desc">Convert EMU to inches.</div>
+      <div class="return-type"><strong>Returns:</strong> Inches value (float).</div>
+    </div>
+  </div>
+
+  <!-- ==================== Examples ==================== -->
+  <div class="section" id="examples">
+    <h2>Example Code</h2>
+
+    <h3>Example 1: Create a Presentation with Text and Shapes</h3>
+    <div class="example">
+<span class="keyword">XIncludeFile</span> <span class="string">"PbPPT.pb"</span>
+
+<span class="function">PbPPT_Init</span>()
+
+<span class="keyword">If</span> <span class="function">PbPPT_Create</span>()
+  <span class="variable">slideIdx</span> = <span class="function">PbPPT_AddSlide</span>(0)
+
+  <span class="comment">; Add title</span>
+  <span class="variable">titleId</span> = <span class="function">PbPPT_AddTextbox</span>(<span class="variable">slideIdx</span>, <span class="function">PbPPT_InchesToEmu</span>(1), <span class="function">PbPPT_InchesToEmu</span>(0.5), <span class="function">PbPPT_InchesToEmu</span>(8), <span class="function">PbPPT_InchesToEmu</span>(1.5))
+  <span class="function">PbPPT_SetShapeText</span>(<span class="variable">titleId</span>, <span class="string">"PbPPT Example"</span>)
+  <span class="function">PbPPT_SetFont</span>(<span class="variable">titleId</span>, 1, 1, <span class="string">"Arial"</span>, 28, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"2E75B6"</span>)
+
+  <span class="comment">; Add rectangle</span>
+  <span class="variable">rectId</span> = <span class="function">PbPPT_AddShape</span>(<span class="variable">slideIdx</span>, <span class="variable">#PbPPT_PrstRectangle$</span>, <span class="function">PbPPT_InchesToEmu</span>(2), <span class="function">PbPPT_InchesToEmu</span>(3), <span class="function">PbPPT_InchesToEmu</span>(6), <span class="function">PbPPT_InchesToEmu</span>(2))
+  <span class="function">PbPPT_SetFillSolid</span>(<span class="variable">rectId</span>, <span class="string">"4472C4"</span>)
+  <span class="function">PbPPT_SetShapeText</span>(<span class="variable">rectId</span>, <span class="string">"Blue Rectangle"</span>)
+  <span class="function">PbPPT_SetFont</span>(<span class="variable">rectId</span>, 1, 1, <span class="string">"Arial"</span>, 18, <span class="variable">#True</span>, <span class="variable">#False</span>, <span class="variable">#False</span>, <span class="string">"FFFFFF"</span>)
+
+  <span class="function">PbPPT_Save</span>(<span class="string">"output.pptx"</span>)
+  <span class="function">PbPPT_Close</span>()
+<span class="keyword">EndIf</span>
+    </div>
+
+    <h3>Example 2: Create a Presentation with a Chart</h3>
+    <div class="example">
+<span class="keyword">XIncludeFile</span> <span class="string">"PbPPT.pb"</span>
+
+<span class="function">PbPPT_Init</span>()
+
+<span class="keyword">If</span> <span class="function">PbPPT_Create</span>()
+  <span class="variable">slideIdx</span> = <span class="function">PbPPT_AddSlide</span>(0)
+
+  <span class="comment">; Add column chart</span>
+  <span class="variable">chartId</span> = <span class="function">PbPPT_AddChart</span>(<span class="variable">slideIdx</span>, <span class="variable">#PbPPT_ChartTypeColumnClustered</span>, <span class="function">PbPPT_InchesToEmu</span>(0.5), <span class="function">PbPPT_InchesToEmu</span>(1.5), <span class="function">PbPPT_InchesToEmu</span>(9), <span class="function">PbPPT_InchesToEmu</span>(5.5))
+  <span class="function">PbPPT_SetChartTitle</span>(<span class="variable">chartId</span>, <span class="string">"Quarterly Sales"</span>)
+
+  <span class="comment">; Add categories</span>
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q1"</span>)
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q2"</span>)
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q3"</span>)
+  <span class="function">PbPPT_AddChartCategory</span>(<span class="variable">chartId</span>, <span class="string">"Q4"</span>)
+
+  <span class="comment">; Add data series</span>
+  <span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"Product A"</span>, <span class="string">"120,200,150,300"</span>)
+  <span class="function">PbPPT_AddChartSeries</span>(<span class="variable">chartId</span>, <span class="string">"Product B"</span>, <span class="string">"80,150,220,250"</span>)
+
+  <span class="function">PbPPT_SetChartHasLegend</span>(<span class="variable">chartId</span>, <span class="variable">#True</span>)
+  <span class="function">PbPPT_Save</span>(<span class="string">"chart_output.pptx"</span>)
+  <span class="function">PbPPT_Close</span>()
+<span class="keyword">EndIf</span>
+    </div>
+  </div>
+
+  <!-- ==================== Changelog ==================== -->
+  <div class="section" id="changelog">
+    <h2>Version History</h2>
+
+    <h3>v1.8 (2026-04-24)</h3>
+    <ul>
+      <li>[Fix] Pictures not displaying: corrected image Target path and r:embed reference in slide rels</li>
+      <li>[Fix] Charts not displaying: added complete chart XML generator</li>
+      <li>[Fix] Nested c:chart element error in chart XML</li>
+      <li>[Fix] Missing image extension Default mappings in Content_Types.xml</li>
+      <li>[Fix] Empty r:id caused by WriteSlideRelsXML/WriteSlideXML call order</li>
+      <li>[Add] chartStyle and chartHasLegend fields added to structure</li>
+      <li>[Add] Chart type constants (LineStacked, LineStacked100, DoughnutExploded)</li>
+      <li>[Optimize] SetChartHasLegend and SetChartStyle now use independent fields</li>
+      <li>[Optimize] Unified chart data format parsing</li>
+    </ul>
+
+    <h3>v1.7 (2026-04-24)</h3>
+    <ul>
+      <li>[Fix] Generated PPTX files could not be opened by Office tools</li>
+      <li>[Fix] Empty r:id attribute in presentation.xml p:sldId</li>
+      <li>[Fix] .rels file referencing non-existent thumbnail.jpeg</li>
+      <li>[Fix] Missing p:notesSz element</li>
+      <li>[Fix] UTF-8 encoding buffer overflow</li>
+      <li>[Add] Added p:notesSz element</li>
+      <li>[Optimize] Removed reference to non-existent thumbnail</li>
+    </ul>
+
+    <h3>v1.6 (2026-04-23)</h3>
+    <ul>
+      <li>[Add] 10 example files</li>
+      <li>[Add] Example file extension changed to .pb</li>
+      <li>[Add] Automatic image size detection</li>
+      <li>[Add] Image SHA1 fingerprint deduplication</li>
+      <li>[Fix] Example file save path issues</li>
+      <li>[Optimize] All example files converted to UTF-8 BOM format</li>
+    </ul>
+
+    <h3>v1.5 (2026-04-22)</h3>
+    <ul>
+      <li>[Add] Chart function interface</li>
+      <li>[Add] Chart type enumerations</li>
+      <li>[Add] Connector function</li>
+      <li>[Add] Paragraph alignment function</li>
+      <li>[Add] Rich text Run function</li>
+      <li>[Add] Shape rotation function</li>
+    </ul>
+
+    <h3>v1.4 (2026-04-21)</h3>
+    <ul>
+      <li>[Add] Table functions</li>
+      <li>[Add] Picture embedding</li>
+      <li>[Add] Binary part management</li>
+      <li>[Add] File fingerprint calculation</li>
+      <li>[Add] Automatic image content type detection</li>
+    </ul>
+
+    <h3>v1.3 (2026-04-20)</h3>
+    <ul>
+      <li>[Add] Shape style settings</li>
+      <li>[Add] Font setting function</li>
+      <li>[Add] Auto shape support</li>
+      <li>[Add] Preset shape constant definitions</li>
+      <li>[Add] Shape fill type enumeration</li>
+    </ul>
+
+    <h3>v1.2 (2026-04-19)</h3>
+    <ul>
+      <li>[Add] Text box function</li>
+      <li>[Add] Multi-paragraph text support</li>
+      <li>[Add] Shape creation framework</li>
+      <li>[Add] Shape type enumeration definitions</li>
+      <li>[Add] Slide dimension settings</li>
+      <li>[Add] Standard and widescreen slide dimension constants</li>
+    </ul>
+
+    <h3>v1.1 (2026-04-18)</h3>
+    <ul>
+      <li>[Add] Slide addition function</li>
+      <li>[Add] Slide layout management</li>
+      <li>[Add] Slide master XML generation</li>
+      <li>[Add] Slide layout XML generation</li>
+      <li>[Add] Theme XML generation</li>
+      <li>[Add] Presentation property XML generation</li>
+      <li>[Add] OPC package relationship management</li>
+    </ul>
+
+    <h3>v1.0 (2026-04-17)</h3>
+    <ul>
+      <li>[Add] Initial project creation, ported from python-pptx (v1.0.2)</li>
+      <li>[Add] Presentation creation functions</li>
+      <li>[Add] Presentation open function (partial)</li>
+      <li>[Add] OOXML specification constant definitions</li>
+      <li>[Add] EMU unit system conversion functions</li>
+      <li>[Add] ZIP packaging support</li>
+      <li>[Add] XML helper module</li>
+      <li>[Add] OPC package management module</li>
+      <li>[Add] PackURI path processing</li>
+      <li>[Add] Document property settings</li>
+      <li>[Add] Initialization and cleanup functions</li>
+    </ul>
+  </div>
+
+  <!-- ==================== Support This Project ==================== -->
+  <div class="section">
+    <h2>Support This Project</h2>
+    <p>If PbPPT is helpful to you, consider supporting the developer's ongoing maintenance and updates:</p>
+    <div style="background: #f5f5f5; padding: 15px; border-radius: 4px; margin: 15px 0;">
+      <p style="margin: 8px 0;"><strong>PayPal:</strong> <a href="https://www.paypal.me/lcodecn" target="_blank" style="color: #d44300;">https://www.paypal.me/lcodecn</a></p>
+      <p style="margin: 8px 0;"><strong>WeChat Pay:</strong> #付款:lcodecn(经营_lcodecn)/openlib/003</p>
+    </div>
+    <p>Your support is the driving force for the continued development of open-source projects!</p>
+  </div>
+
+  <div class="footer">
+    <p>PbPPT Library v1.8 | Author: lcode.cn | License: Apache 2.0</p>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -333,6 +333,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
+## 支持本项目
+
+如果 PbPPT 对您有帮助，欢迎支持开发者的持续维护和更新：
+
+- **PayPal** : https://www.paypal.me/lcodecn
+- **微信支付** : #付款:lcodecn(经营_lcodecn)/openlib/003
+
+您的支持是开源项目持续发展的动力！
+
 ## 致谢
 
 - 感谢 python-pptx 项目提供了优秀的参考实现

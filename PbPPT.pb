@@ -1,6 +1,6 @@
 ﻿; ***************************************************************************************
 ; PbPPT Library - PowerPoint pptx 操作库
-; 版本: 1.0
+; 版本: 1.8
 ; 作者: lcode.cn
 ; 许可证: Apache 2.0
 ;
@@ -8,6 +8,10 @@
 ;       使用PureBasic内置XML和Packer库
 ;       无需安装Microsoft Office或任何第三方依赖
 ;       移植自python-pptx项目(v1.0.2)
+;
+; 支持本项目:
+;   PayPal:  https://www.paypal.me/lcodecn
+;   微信支付: #付款:lcodecn(经营_lcodecn)/openlib/003
 ;
 ; 主要功能:
 ;   - 创建和读取PowerPoint pptx文件
